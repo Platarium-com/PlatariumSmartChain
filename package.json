@@ -1,41 +1,27 @@
 {
   "name": "platariumsmartchain",
-  "version": "1.0.8",
-  "description": "Blockchain implementation in Javascript",
+  "version": "1.0.14",
+  "description": "Platarium Smart Chain",
+  "main": "blockchain.js",
+  "scripts": {
+    "test": "npx mocha signatureVerificationTest.js"
+  },
   "keywords": [
     "blockchain",
-    "transactions"
+    "smart chain",
+    "platarium"
   ],
-  "main": "src/blockchain.js",
-  "scripts": {
-    "test": "nyc mocha tests/*.js",
-    "lint": "npm run lint:eslint && npm run lint:prettier",
-    "lint:eslint": "eslint src/** tests/**",
-    "lint:prettier": "prettier src/**/*.js",
-    "coverage": "nyc --reporter=lcov npm run test"
-  },
-  "author": "Platarium",
+  "author": "platarium",
   "license": "MIT",
-  "repository": "github:Platarium-com/PlatariumSmartChain",
-  "bugs": {
-    "url": "https://github.com/Platarium-com/PlatariumSmartChain/issues"
-  },
-  "homepage": "https://github.com/Platarium-com/PlatariumSmartChain",
   "dependencies": {
-    "bip39": "^3.1.0",
-    "create-hash": "^1.2.0",
-    "create-hmac": "^1.1.7",
-    "crypto-js": "4.1.1",
-    "elliptic": "6.5.4",
-    "hdkey": "^2.1.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.8.0",
-    "eslint-config-standard": "^17.0.0-0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-standard": "^5.0.0",
-    "mocha": "^10.0.0"
+    "bip39": "^3.0.8",
+    "chai": "^4.3.10",
+    "crypto-js": "^4.1.1",
+    "elliptic": "^6.5.4",
+    "hdkey": "^2.1.0",
+    "mocha": "^10.2.0",
+    "platariumsmartchain": "^1.0.14",
+    "readline-sync": "^1.4.10",
+    "uuid": "^9.0.1"
   }
 }

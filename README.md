@@ -1,18 +1,11 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/VELRxXl.png" alt="Project logo"></a>
+ <img width=200px height=200px src="https://prevedere.platarium.com/assets/images/plp/plp.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Platarium Smart Chain</h3>
 
 ---
-
-## Features
-
-* Simple proof-of-work algorithm
-* Verify blockchain (to prevent tampering)
-* Generate wallet (private/public key)
-* Sign transactions
 
 ## 🏁 Getting Started <a name="getting_started"></a>
 
@@ -21,56 +14,137 @@
 npm i platariumsmartchain
 ```
 
+### Key Generator Module (modules/keyGenerator.js)
 
-### Generate a keypair
-To make transactions on this blockchain, you need a keypair. The public key becomes your wallet address, and the private key is used to sign transactions.
+###### `generateWalletKeys(mnemonic, signatureCode)`
 
-```js
-const { PlatariumSmartChain } = require('platariumsmartchain');
-const bip39 = require('bip39');
-const hdkey = require('hdkey');
+Generates a set of wallet keys based on a mnemonic and signature code.
 
-// Create a new instance of PlatariumSmartChain
-const PlatariumSmartChainInstance = new PlatariumSmartChain();
+###### Parameters
 
-// Generate a new wallet keys (public and private key)
-const walletKeys = PlatariumSmartChainInstance.generateWalletKeys();
+- `mnemonic`: A mnemonic phrase.
+- `signatureCode`: A signature code.
 
-// WalletKeys object now contains your public & private key
+###### Returns
+
+An object containing the following keys:
+
+- `publicKey`: The public key generated from the mnemonic and signature code.
+- `privateKey`: The private key generated from the mnemonic and signature code.
+- `signatureKey`: A signature key derived from the public key.
+
+###### Example
+
+```javascript
+const { KeyGenerator } = require('platariumsmartchain');
+
+// Replace 'yourMnemonicPhrase' and 'yourSignatureCode' with actual values
+const mnemonic = 'yourMnemonicPhrase';
+const signatureCode = 'yourSignatureCode';
+
+const keyGenerator = new KeyGenerator();
+const walletKeys = keyGenerator.generateWalletKeys(mnemonic, signatureCode);
+
 console.log('Public key:', walletKeys.publicKey);
 console.log('Private key:', walletKeys.privateKey);
+console.log('Signature key:', walletKeys.signatureKey);
 ```
 
-The `myKey` object now contains your public & private key:
+### Signature Verification Module (modules/signatureVerification.js)
 
-```js
-console.log('Public key:', myKey.getPublic('hex'));
-console.log('Private key:', myKey.getPrivate('hex'));
+###### `verify(privateKey, signatureKey, publicKey, data)`
+
+Verifies the signature of data.
+
+###### Parameters
+
+- `privateKey`: The private key of the signer.
+- `signatureKey`: The signature key derived from the public key.
+- `publicKey`: The public key of the signer.
+- `data`: The data to be verified.
+
+###### Returns
+
+- `true`: If the signature is verified successfully.
+- `false`: If the signature verification fails.
+
+###### Example
+
+```javascript
+const { SignatureVerification } = require('platariumsmartchain');
+
+// Replace 'yourPrivateKey', 'yourSignatureKey', 'yourPublicKey', and 'yourData' with actual values
+const privateKey = 'yourPrivateKey';
+const signatureKey = 'yourSignatureKey';
+const publicKey = 'yourPublicKey';
+const data = 'yourData';
+
+const isVerified = SignatureVerification.verify(privateKey, signatureKey, publicKey, data);
+
+if (isVerified) {
+  console.log('Signature is valid.');
+} else {
+  console.log('Signature verification failed.');
+}
+```
+This method verifies the signature of data using the provided private key, signature key, public key, and data. It returns true if the signature is valid and false otherwise.
+
+Please replace 'yourPrivateKey', 'yourSignatureKey', 'yourPublicKey', and 'yourData' with your actual private key, signature key, public key, and data.
+
+### Transaction Module (modules/transaction.js)
+
+##### Constructor
+
+```javascript
+new Transaction(publicKey, receiver, amount, signature);
+
+- `publicKey`: The public key of the sender.
+- `receiver`: The public key of the receiver.
+- `amount`: The amount of the transaction.
+- `signature`: The signature of the transaction.
+```
+##### Properties
+```javascript
+- `sender`: The public key of the sender.
+- `receiver`: The public key of the receiver.
+- `amount`: The amount of the transaction.
+- `feePercentage`: The fee percentage.
+- `minFee`: The minimum fee.
+- `fee`: The calculated fee.
+- `totalAmount`: The total amount including the fee.
+- `timestamp`: The timestamp of the transaction.
+- `id`: The unique ID of the transaction.
+- `signature`: The signature of the transaction.
 ```
 
-### Create a blockchain instance
-Now you can create a new instance of the Blockchain:
+### Methods
+calculateHash()
+Calculates the hash of the transaction.
 
-```js
-const { Blockchain, Transaction } = require('platariumsmartchain');
-const myChain = new Blockchain();
+### verifySignature()
+Verifies the signature of the transaction.
+
+###### Returns
+true: If the signature is verified successfully.
+false: If the signature verification fails.
+
+###### Example
+
+```javascript
+const { Transaction } = require('platariumsmartchain');
+
+// Replace 'yourPublicKey', 'toAddress', 'yourAmount', and 'yourSignature' with actual values
+const publicKey = 'yourPublicKey';
+const toAddress = 'toAddress';
+const amount = 100;
+const signature = 'yourSignature';
+
+const transaction = new Transaction(publicKey, toAddress, amount, signature);
+const isSignatureValid = transaction.verifySignature();
+
+if (isSignatureValid) {
+  console.log('Transaction signature is valid.');
+} else {
+  console.log('Transaction signature verification failed.');
+}
 ```
-
-### Adding transactions
-```js
-// Transfer 100 coins from my wallet to "toAddress"
-const tx = new Transaction(walletKeys.publicKey, 'toAddress', 100);
-
-// Sign the transaction with your private key
-tx.signTransaction(walletKeys.privateKey);
-
-// Add the transaction to the pending transactions pool
-myChain.addTransaction(tx);
-```
-
-To finalize this transaction, we have to mine a new block. We give this method our wallet address because we will receive a mining reward:
-
-```js
-myChain.minePendingTransactions(walletKeys.publicKey);
-```
-Note: In order to send the transaction to the server, you will need to implement the server API to receive and process transactions from the client. For the server-side implementation, please refer to the server.js file.
